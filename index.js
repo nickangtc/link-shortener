@@ -26,6 +26,16 @@ app.get('/', function (req, res) {
   res.render('index');
 });
 
+// READ shortened url page
+app.get('/links/:id', function (req, res) {
+  // turn a number (such as a model id) to a hash
+  var hash = hashids.encode(req.params.id);
+
+  var shortUrl = 'localhost:3000/' + hash;
+  console.log('shortUrl:', shortUrl);
+  res.json({url: shortUrl});
+});
+
 // UPDATE database
 app.post('/links', function (req, res) {
   var longUrl = req.body.url;
@@ -34,10 +44,7 @@ app.post('/links', function (req, res) {
   db.link.create({
     url: longUrl
   }).then(function (data) {
-    console.log('index.js data after create entry:', data);
-    // turn a number (such as a model id) to a hash
-    var hash = hashids.encode(data.id);
-    res.send(hash);
+    res.redirect('/links/' + data.id);
   });
 });
 

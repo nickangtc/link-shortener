@@ -11,19 +11,13 @@ $(document).ready(function () {
     console.log(URL);
 
     // post to db
-    $.post('/links', {url: URL}, function (data) {
-      var shortUrl = 'localhost:3000' + data; // hashified in server
-      console.log('main.js shortUrl:', shortUrl);
-
-      // create elements, modify contents
-      var input = $('<input>').val(shortUrl);
-      input.attr({
+    $.post('/links', {url: URL}, function (response) {
+      console.log(response);
+      var input = $('<input>').attr({
         'type': 'text',
+        'value': response.url,
         'onclick': 'this.select();'
       });
-      input.attr('onclick', 'this.select();');
-
-      // append elements and url to page
       $('#stage').append(input);
     });
   });

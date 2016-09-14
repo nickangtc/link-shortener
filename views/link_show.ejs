@@ -11,15 +11,15 @@
   <body>
     <div class="container">
       <div class="row">
-        <div id="stage" class="col-sm-12 text-center">
-          <h1>Shorter than Bitly</h1>
+        <div class="col-sm-12 text-center">
+          <h1>Your link is now magically short!</h1>
 
-          <form>
+            <h2>
+              Shortened URL:
+            </h2>
             <div>
-              URL: <input type="text">
-              <button class="btn btn-default" type="submit">Shorten!</button>
+              <h3><input type="text" value="<%= url %>" onclick="this.select();"></h3>
             </div>
-          </form>
 
         </div>
       </div>
