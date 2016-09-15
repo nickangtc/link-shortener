@@ -22,33 +22,36 @@ app.use(express.static(staticPath));
 var hashids = new Hashids('mee siam mai hump');
 
 // READ homepage
+console.log('set up GET / listener');
 app.get('/', function (req, res) {
   res.render('index');
 });
 
 // READ original URL and redirect
+console.log('set up GET /:hash listener');
 app.get('/:hash', function (req, res) {
   var hashed = req.params.hash; // just hash param, not full link
   var id = hashids.decode(hashed); // id = decoded hash
-  console.log('hash...', hashed, '... & id:', id);
+  console.log('hash', hashed, ' converted to', id);
   // retrieve original url from db using id
-  db.links.find({
-    where: {id: id}
+  db.link.find({
+    where: { id: id }
   }).then(function (data) {
     var actualUrl = 'http://' + data.url;
     res.redirect(actualUrl);
   });
-  // db.links.findById(id).then(function (data) {
+  // db.link.findById(id).then(function (data) {
   //   res.redirect(data.id);
   // });
 });
 
 // UPDATE database
+console.log('set up POST /links listener');
 app.post('/links', function (req, res) {
   var longUrl = req.body.url;
   console.log('longUrl:', longUrl);
   // create entry in db
-  db.links.create({
+  db.link.create({
     url: longUrl
   }).then(function (data) {
     res.redirect('/links/' + data.id);
@@ -56,6 +59,7 @@ app.post('/links', function (req, res) {
 });
 
 // READ UPDATED shortened url page
+console.log('set up GET /links/:id listener');
 app.get('/links/:id', function (req, res) {
   // turn a number (such as a model id) to a hash
   var hash = hashids.encode(req.params.id);
