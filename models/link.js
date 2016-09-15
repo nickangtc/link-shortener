@@ -1,6 +1,6 @@
 'use strict';
 module.exports = function(sequelize, DataTypes) {
-  var link = sequelize.define('link', {
+  var links = sequelize.define('links', {
     url: DataTypes.TEXT
   }, {
     classMethods: {
@@ -9,5 +9,5 @@ module.exports = function(sequelize, DataTypes) {
       }
     }
   });
-  return link;
+  return links;
 };

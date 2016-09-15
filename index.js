@@ -26,14 +26,21 @@ app.get('/', function (req, res) {
   res.render('index');
 });
 
-// READ shortened url page
-app.get('/links/:id', function (req, res) {
-  // turn a number (such as a model id) to a hash
-  var hash = hashids.encode(req.params.id);
-
-  var shortUrl = 'localhost:3000/' + hash;
-  console.log('shortUrl:', shortUrl);
-  res.json({url: shortUrl});
+// READ original URL and redirect
+app.get('/:hash', function (req, res) {
+  var hashed = req.params.hash; // just hash param, not full link
+  var id = hashids.decode(hashed); // id = decoded hash
+  console.log('hash...', hashed, '... & id:', id);
+  // retrieve original url from db using id
+  db.links.find({
+    where: {id: id}
+  }).then(function (data) {
+    var actualUrl = 'http://' + data.url;
+    res.redirect(actualUrl);
+  });
+  // db.links.findById(id).then(function (data) {
+  //   res.redirect(data.id);
+  // });
 });
 
 // UPDATE database
@@ -41,17 +48,21 @@ app.post('/links', function (req, res) {
   var longUrl = req.body.url;
   console.log('longUrl:', longUrl);
   // create entry in db
-  db.link.create({
+  db.links.create({
     url: longUrl
   }).then(function (data) {
     res.redirect('/links/' + data.id);
   });
 });
 
-// db.link.create({
-//   url: 'www.sethgodin.com'
-// }).then(function (data) {
-//   // code
-// });
+// READ UPDATED shortened url page
+app.get('/links/:id', function (req, res) {
+  // turn a number (such as a model id) to a hash
+  var hash = hashids.encode(req.params.id);
+
+  var shortUrl = 'localhost:3000/' + hash;
+  console.log('shortUrl:', shortUrl);
+  res.render('link_show.ejs', {url: shortUrl});
+});
 
 app.listen(3000);
